@@ -17,6 +17,8 @@ __global__ void euclidian_distance(float2* p1, float2* p2, float* distance, int 
     }
 }
 
+
+
 // Error checking macro for simplicity
 #define CUDA_CHECK(call) \
     do { \
@@ -75,6 +77,7 @@ void test_on_cuda(std::vector<float>& distances, const std::vector<float2>& v1, 
     int blocksPerGrid = (count + threadsPerBlock - 1) / threadsPerBlock;
 
     // <<< Grid Size, Block Size >>> (configuration)
+    euclidian_distance(d_p1, d_p2, d_distance, count);
     euclidian_distance<<<blocksPerGrid, threadsPerBlock>>>(d_p1, d_p2, d_distance, count);
 
     // Check for kernel launch errors
