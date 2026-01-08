@@ -1,12 +1,18 @@
 import torch
 
-a = torch.rand(8, 14, 16000, 64, device="cuda", dtype=torch.float)
-b = torch.rand(8, 14, 1600, 64, device="cuda", dtype=torch.float)
 
-c = torch.matmul(a, b.transpose(2, 3))
+dtype, elem_sz= torch.float32, 4
+b, s, H = 32, 2048, 1024
+
+A = torch.rand(b, s, H, device="cuda", dtype=dtype)
+B = torch.rand(H, H, device="cuda", dtype=dtype)
+
+c = torch.matmul(A, B)
 
 print(f" >>> shape of c: {c.shape}")
 
-peak = torch.cuda.max_memory_allocated("cuda") // 2**30
+estimation = (2* b*s*H + H*H ) * elem_sz / 2**30
+peak = torch.cuda.max_memory_allocated("cuda") / 2**30
 
 print(f" >>> peak memory usage: {peak} GB")
+print(f" >>> estimation: {estimation} GB")
